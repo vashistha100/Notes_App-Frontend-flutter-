@@ -4,13 +4,18 @@ import 'package:notes_app/services/api_services.dart';
 
 class NotesProvider with ChangeNotifier {
   List<Note> notes = [];
+  bool isLoading = true;
 
   NotesProvider() {
     fetchNotes();
   }
+  void sortNotes() {
+    notes.sort((a, b) => b.dateadded!.compareTo(a.dateadded!));
+  }
 
   void addNote(Note note) {
     notes.add(note);
+    sortNotes();
     notifyListeners();
     ApiServices.addNote(note);
   }
@@ -19,6 +24,7 @@ class NotesProvider with ChangeNotifier {
     int indexOffNote =
         notes.indexOf(notes.firstWhere((element) => element.id == note.id));
     notes[indexOffNote] = note;
+    sortNotes();
     notifyListeners();
     ApiServices.addNote(note);
   }
@@ -27,12 +33,15 @@ class NotesProvider with ChangeNotifier {
     int indexOfNote =
         notes.indexOf(notes.firstWhere((element) => element.id == note.id));
     notes.removeAt(indexOfNote);
+    sortNotes();
     notifyListeners();
     ApiServices.deleteNote(note);
   }
 
-  void fetchNotes()  async{
+  void fetchNotes() async {
     notes = await ApiServices.fetchNotes("manishsharma");
+    isLoading = false;
+    sortNotes();
     notifyListeners();
   }
 }

@@ -8,8 +8,10 @@ class ApiServices {
   static String baseUrl =
       "https://backend-production-524d.up.railway.app/notes";
 
+  bool isLoading = true;
+
   static Future<void> addNote(Note note) async {
-    Uri urirequest = Uri.parse(baseUrl + "/add");
+    Uri urirequest = Uri.parse("$baseUrl/add");
 
     var response = await http.post(urirequest, body: note.toMap());
 
@@ -18,7 +20,7 @@ class ApiServices {
   }
 
   static Future<void> deleteNote(Note note) async {
-    Uri urirequest = Uri.parse(baseUrl + "/delete");
+    Uri urirequest = Uri.parse("$baseUrl/delete");
 
     var response = await http.post(urirequest, body: note.toMap());
 
@@ -27,20 +29,18 @@ class ApiServices {
   }
 
   static Future<List<Note>> fetchNotes(String userid) async {
-    Uri urirequest = Uri.parse(baseUrl + "/list");
-
-    var response = await http.post(urirequest, body: {userid: userid});
-
+    Uri requestUri = Uri.parse(baseUrl + "/list");
+    var response = await http.post(requestUri, body: {"userid": userid});
     var decoded = jsonDecode(response.body);
-    print(decoded.toString());
+    
 
     List<Note> notes = [];
-
-    for (var notemap in decoded) {
-      Note newNote = Note.fromMap(notemap);
+    for (var noteMap in decoded) {
+      Note newNote = Note.fromMap(noteMap);
       notes.add(newNote);
     }
-
+    
     return notes;
+    
   }
 }

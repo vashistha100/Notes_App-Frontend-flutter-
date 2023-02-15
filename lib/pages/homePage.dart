@@ -25,62 +25,68 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.deepPurple,
         centerTitle: true,
       ),
-      body: SafeArea(
-        child: (notesProvider.notes.isEmpty)
-            ? const Center(
-                child: Text("No Notes Yet"), 
-              )
-            : GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2),
-                itemBuilder: (context, index) {
-                  Note currentNote = notesProvider.notes[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                              builder: (context) => AddNewNote(
-                                    isUpdate: true,
-                                    note: currentNote,
-                                  )));
-                    },
-                    onLongPress: () {
-                      notesProvider.deleteNote(currentNote);
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                          borderRadius: BorderRadius.circular(15)),
-                      margin: const EdgeInsets.all(5),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              currentNote.title!,
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 20),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
+      body: notesProvider.isLoading == false
+          ? SafeArea(
+              child: (notesProvider.notes.isEmpty)
+                  ? const Center(
+                      child: Text("No Notes Yet"),
+                    )
+                  : GridView.builder(
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2),
+                      itemBuilder: (context, index) {
+                        Note currentNote = notesProvider.notes[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                    builder: (context) => AddNewNote(
+                                          isUpdate: true,
+                                          note: currentNote,
+                                        )));
+                          },
+                          onLongPress: () {
+                            notesProvider.deleteNote(currentNote);
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(15)),
+                            margin: const EdgeInsets.all(5),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    currentNote.title!,
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  Text(
+                                    currentNote.content!,
+                                    style: TextStyle(
+                                        fontSize: 18, color: Colors.grey[700]),
+                                    maxLines: 5,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
                             ),
-                            Text(
-                              currentNote.content!,
-                              style: TextStyle(
-                                  fontSize: 18, color: Colors.grey[700]),
-                              maxLines: 5,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
-                      ),
+                          ),
+                        );
+                      },
+                      itemCount: notesProvider.notes.length,
                     ),
-                  );
-                },
-                itemCount: notesProvider.notes.length,
-              ),
-      ),
+            )
+          :const Center(
+              child: CircularProgressIndicator(),
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
