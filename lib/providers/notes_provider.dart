@@ -13,6 +13,14 @@ class NotesProvider with ChangeNotifier {
     notes.sort((a, b) => b.dateadded!.compareTo(a.dateadded!));
   }
 
+  List<Note> searchNotes(String searchQuery) {
+    return notes
+        .where((element) =>
+            element.title!.toLowerCase().contains(searchQuery.toLowerCase()) ||
+            element.content!.toLowerCase().contains(searchQuery.toLowerCase()))
+        .toList();
+  }
+
   void addNote(Note note) {
     notes.add(note);
     sortNotes();
